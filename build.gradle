@@ -22,7 +22,7 @@ apply plugin: 'kotlinx-serialization'
 apply plugin: 'maven-publish'
 apply plugin: "application"
 
-mainClassName = "MainKt"
+mainClassName = "com.github.fsteitz.extractor.token.main.MainKt"
 
 repositories {
   mavenLocal()
