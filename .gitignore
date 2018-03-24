@@ -6,4 +6,4 @@ build/
 # Files
 *.iml
 
-*/**/bookmarks.html
+*/**/bookmark.json
