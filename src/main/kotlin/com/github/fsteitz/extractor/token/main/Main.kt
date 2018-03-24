@@ -18,12 +18,17 @@ package com.github.fsteitz.extractor.token.main
 
 import com.github.fsteitz.extractor.token.matcher.LeoOrgTokenMatcher
 import com.github.fsteitz.extractor.token.matcher.UrlTokenMatcher
+import com.github.fsteitz.extractor.token.reader.BookmarkReader
+import java.io.FileNotFoundException
+import java.net.URL
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 
 /**
  * @author Florian Steitz (florian@fsteitz.com)
  */
+
+const val BOOKMARK_JSON = "bookmark.json"
 
 val charset = StandardCharsets.UTF_8 as Charset
 val matchers = listOf(
@@ -34,15 +39,16 @@ val matchers = listOf(
  *
  */
 fun main(args: Array<String>) {
-  val testUrls = listOf(
-          "http://dict.leo.org/ende?lp=ende&lang=en&searchLoc=0&cmpType=relaxed&sectHdr=on&spellToler=&search=my%20name%20is",
-          "http://dict.leo.org/dictQuery/m-vocab/ende/de.html?searchLoc=0&lp=ende&lang=de&search=the%20despicable%20one&resultOrder=basic",
-          "http://dict.leo.org/#/search=inexplicable&searchLoc=0&resultOrder=basic&multiwordShowSingle=on",
-          "http://pda.leo.org/englisch-deutsch/Bayou",
-          "https://dict.leo.org/englisch-deutsch/hit%20a%20snag"
-  )
+  val urls = BookmarkReader.readFromFile(getClasspathResource(BOOKMARK_JSON).file, charset)
+  matchers.forEach { extractTokens(urls, it) }
+}
 
-  matchers.forEach { extractTokens(testUrls, it) }
+/**
+ *
+ */
+fun getClasspathResource(fileName: String): URL {
+  return Thread.currentThread().contextClassLoader?.getResource(fileName)
+          ?: throw FileNotFoundException("File '$fileName' in classpath not found")
 }
 
 /**
