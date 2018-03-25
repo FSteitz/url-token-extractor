@@ -31,5 +31,5 @@ interface TokenMatcher {
   /**
    *
    */
-  fun findTokens(url: String): Optional<Collection<String?>>
+  fun findTokens(inputString: String): Optional<Collection<String?>>
 }
