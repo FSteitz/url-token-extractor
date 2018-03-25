@@ -19,7 +19,7 @@ package com.github.fsteitz.extractor.token.main
 import com.github.fsteitz.extractor.token.ExtractionResult
 import com.github.fsteitz.extractor.token.TokenExtractor
 import com.github.fsteitz.extractor.token.matcher.LeoOrgTokenMatcher
-import com.github.fsteitz.extractor.token.matcher.UrlTokenMatcher
+import com.github.fsteitz.extractor.token.matcher.TokenMatcher
 import com.github.fsteitz.extractor.token.reader.BookmarkReader
 import java.io.FileNotFoundException
 import java.net.URL
@@ -57,7 +57,7 @@ fun getClasspathResource(fileName: String): URL {
 /**
  *
  */
-private fun printResult(matcher: UrlTokenMatcher, extractionResult: ExtractionResult) {
+private fun printResult(matcher: TokenMatcher, extractionResult: ExtractionResult) {
   val matcherName = matcher.javaClass.simpleName
 
   println("Patterns applied by $matcherName:")

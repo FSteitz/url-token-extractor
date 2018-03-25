@@ -25,7 +25,7 @@ private const val HTTP_PATTERN = """http[s]*:\/\/"""
 /**
  * @author Florian Steitz (florian@fsteitz.com)
  */
-abstract class HttpTokenMatcher(private val charset: Charset) : UrlTokenMatcher {
+abstract class HttpTokenMatcher(private val charset: Charset) : TokenMatcher {
 
   override val patterns by lazy { pathPatterns.map { HTTP_PATTERN + domainPattern + it } }
 

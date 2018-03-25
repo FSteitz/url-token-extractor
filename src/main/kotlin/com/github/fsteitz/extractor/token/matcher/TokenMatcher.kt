@@ -21,7 +21,7 @@ import java.util.Optional
 /**
  * @author Florian Steitz (florian@fsteitz.com)
  */
-interface UrlTokenMatcher {
+interface TokenMatcher {
 
   /**
    *

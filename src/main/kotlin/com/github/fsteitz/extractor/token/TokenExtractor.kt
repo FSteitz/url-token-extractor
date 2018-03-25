@@ -16,24 +16,24 @@
 
 package com.github.fsteitz.extractor.token
 
-import com.github.fsteitz.extractor.token.matcher.UrlTokenMatcher
+import com.github.fsteitz.extractor.token.matcher.TokenMatcher
 
 /**
  * @author Florian Steitz (florian@fsteitz.com)
  */
-class TokenExtractor(val matchers: Collection<UrlTokenMatcher>) {
+class TokenExtractor(val matchers: Collection<TokenMatcher>) {
 
   /**
    *
    */
-  fun extractTokens(inputStrings: Collection<String>): Map<UrlTokenMatcher, ExtractionResult> {
+  fun extractTokens(inputStrings: Collection<String>): Map<TokenMatcher, ExtractionResult> {
     return matchers.associateBy({ it }, { extractTokens(inputStrings, it) })
   }
 
   /**
    *
    */
-  private fun extractTokens(inputStrings: Collection<String>, matcher: UrlTokenMatcher): ExtractionResult {
+  private fun extractTokens(inputStrings: Collection<String>, matcher: TokenMatcher): ExtractionResult {
     val extractedTokens = ArrayList<TokenData>()
     val nonMatchingInputStrings = ArrayList<String?>()
 
