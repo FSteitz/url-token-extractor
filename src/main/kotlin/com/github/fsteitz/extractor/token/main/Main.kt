@@ -16,6 +16,8 @@
 
 package com.github.fsteitz.extractor.token.main
 
+import com.github.fsteitz.extractor.token.ExtractionResult
+import com.github.fsteitz.extractor.token.TokenExtractor
 import com.github.fsteitz.extractor.token.matcher.LeoOrgTokenMatcher
 import com.github.fsteitz.extractor.token.matcher.UrlTokenMatcher
 import com.github.fsteitz.extractor.token.reader.BookmarkReader
@@ -28,11 +30,12 @@ import java.nio.charset.StandardCharsets
  * @author Florian Steitz (florian@fsteitz.com)
  */
 
-const val BOOKMARK_JSON = "bookmark.json"
+private const val BOOKMARK_JSON = "bookmark.json"
+private const val TOKEN_LOG_LIMIT = 50
 
-val charset = StandardCharsets.UTF_8 as Charset
-val matchers = listOf(
-        LeoOrgTokenMatcher(charset)
+private val charset = StandardCharsets.UTF_8 as Charset
+private val matchers = listOf(
+  LeoOrgTokenMatcher(charset)
 )
 
 /**
@@ -40,7 +43,7 @@ val matchers = listOf(
  */
 fun main(args: Array<String>) {
   val urls = BookmarkReader.readFromFile(getClasspathResource(BOOKMARK_JSON).file, charset)
-  matchers.forEach { extractTokens(urls, it) }
+  TokenExtractor(matchers).extractTokens(urls).forEach(::printResult)
 }
 
 /**
@@ -48,18 +51,21 @@ fun main(args: Array<String>) {
  */
 fun getClasspathResource(fileName: String): URL {
   return Thread.currentThread().contextClassLoader?.getResource(fileName)
-          ?: throw FileNotFoundException("File '$fileName' in classpath not found")
+    ?: throw FileNotFoundException("File '$fileName' in classpath not found")
 }
 
 /**
  *
  */
-private fun extractTokens(urls: Collection<String>, matcher: UrlTokenMatcher) {
+private fun printResult(matcher: UrlTokenMatcher, extractionResult: ExtractionResult) {
   val matcherName = matcher.javaClass.simpleName
 
-  println("Patterns checked by $matcherName:")
+  println("Patterns applied by $matcherName:")
   matcher.patterns.forEach { println(" - $it") }
 
-  println("\nTokens extracted by $matcherName:")
-  urls.forEach { println(matcher.findTokens(it).orElse(listOf("?"))) }
+  println("\n${extractionResult.extractedTokens.size} Tokens extracted by $matcherName (max $TOKEN_LOG_LIMIT are shown):")
+  extractionResult.extractedTokens.take(TOKEN_LOG_LIMIT).forEach { println(" - ${it.tokens}") }
+
+  println("\n${extractionResult.nonMatchingInputStrings.size} input strings not matched by $matcherName:")
+  extractionResult.nonMatchingInputStrings.forEach { println(" - $it") }
 }
