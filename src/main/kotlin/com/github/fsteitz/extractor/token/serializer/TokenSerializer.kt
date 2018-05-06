@@ -14,28 +14,33 @@
  * limitations under the License.
  */
 
-package com.github.fsteitz.extractor.token.reader
+package com.github.fsteitz.extractor.token.serializer
 
+import com.github.fsteitz.extractor.token.TokenData
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JSON
-import java.io.File
 import java.nio.charset.Charset
+import java.nio.file.Files
+import java.nio.file.Paths
 
 /**
  * @author Florian Steitz (florian@fsteitz.com)
  */
 @Serializable
-private data class BookmarkData(val bookmarks: Collection<String>)
+private data class TokenDataContainer(val tokenData: Collection<TokenData>)
 
 /**
  * @author Florian Steitz (florian@fsteitz.com)
  */
-object BookmarkReader {
+class TokenSerializer(private val tokens: Collection<TokenData>) {
 
   /**
    *
    */
-  fun readFromFile(file: File, charset: Charset): Collection<String> {
-    return JSON.parse<BookmarkData>(file.readText(charset)).bookmarks
+  fun writeToDisk(pathName: String, charset: Charset) {
+    val fileContent = JSON.stringify(TokenDataContainer(tokens))
+
+    println("Writing extracted token data to '$pathName'")
+    Files.write(Paths.get(pathName), fileContent.toByteArray(charset))
   }
 }

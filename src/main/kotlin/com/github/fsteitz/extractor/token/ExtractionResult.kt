@@ -16,12 +16,16 @@
 
 package com.github.fsteitz.extractor.token
 
+import kotlinx.serialization.Serializable
+
 /**
  * @author Florian Steitz (florian@fsteitz.com)
  */
+@Serializable
 data class ExtractionResult(val extractedTokens: Collection<TokenData>, val nonMatchingInputStrings: Collection<String?>)
 
 /**
  * @author Florian Steitz (florian@fsteitz.com)
  */
+@Serializable
 data class TokenData(val source: String?, val tokens: Collection<String?>)

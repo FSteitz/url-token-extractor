@@ -21,6 +21,8 @@ import com.github.fsteitz.extractor.token.TokenExtractor
 import com.github.fsteitz.extractor.token.matcher.LeoOrgTokenMatcher
 import com.github.fsteitz.extractor.token.matcher.TokenMatcher
 import com.github.fsteitz.extractor.token.reader.BookmarkReader
+import com.github.fsteitz.extractor.token.serializer.TokenSerializer
+import java.io.File
 import java.io.FileNotFoundException
 import java.net.URL
 import java.nio.charset.Charset
@@ -31,6 +33,7 @@ import java.nio.charset.StandardCharsets
  */
 
 private const val BOOKMARK_JSON = "bookmark.json"
+private const val TOKEN_JSON = "token.json"
 private const val TOKEN_LOG_LIMIT = 50
 
 private val charset = StandardCharsets.UTF_8 as Charset
@@ -42,8 +45,13 @@ private val matchers = listOf(
  *
  */
 fun main(args: Array<String>) {
-  val urls = BookmarkReader.readFromFile(getClasspathResource(BOOKMARK_JSON).file, charset)
-  TokenExtractor(matchers).extractTokens(urls).forEach(::printResult)
+  val bookmarkFile = File(getClasspathResource(BOOKMARK_JSON).file)
+  val urls = BookmarkReader.readFromFile(bookmarkFile, charset)
+  val extractedTokens = TokenExtractor(matchers).extractTokens(urls)
+  val tokenFilePath = bookmarkFile.parent + File.separator + TOKEN_JSON
+
+  extractedTokens.forEach(::printResult)
+  TokenSerializer(extractedTokens.values.flatMap { it.extractedTokens }).writeToDisk(tokenFilePath, charset)
 }
 
 /**
